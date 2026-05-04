@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YOLO Vehicle Detection</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            min-height: 100vh;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .container-box {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 60px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .btn-detect {
+            background: linear-gradient(to right, #0072ff, #00c6ff);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-detect:hover {
+            transform: scale(1.05);
+        }
+
+        .preview-img {
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .upload-box {
+            border: 2px dashed rgba(255,255,255,0.4);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        #fileName {
+            color: #ccc;
+            margin-top: 10px;
+        }
+
+        #loading {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="container-box">
+
+        <h1>🚗 YOLO Vehicle Detection</h1>
+        <p class="text-center">Upload an image to detect vehicles using AI</p>
+
+        <form action="/predict" method="post" enctype="multipart/form-data" id="uploadForm">
+
+            <label class="upload-box">
+                📂 Click to Upload Image
+                <input type="file" name="image" id="fileInput" required>
+            </label>
+
+            <p id="fileName" class="text-center">No file selected</p>
+
+            <!-- Preview -->
+           <div class="text-center">
+    <img id="preview" class="img-fluid preview-img d-block mx-auto" style="display:none;" width="300">
+</div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn-detect">🔍 Detect Objects</button>
+            </div>
+
+            <!-- Loading -->
+            <div id="loading" class="text-center mt-3">
+                ⏳ Processing image...
+            </div>
+
+        </form>
+
+        <!-- Result -->
+        {% if image %}
+<!-- Result -->
+{% if image %}
+<div class="text-center" id="resultSection">
+    <h4 class="mt-4">Detection Result:</h4>
+
+    <img src="{{ image }}" class="img-fluid preview-img d-block mx-auto" width="400">
+
+    <!-- 👇 PUT MESSAGE HERE -->
+    {% if message %}
+    <div class="text-center mt-3">
+        <h5>{{ message }}</h5>
+    </div>
+    {% endif %}
+
+</div>
+{% endif %}
+
+<!-- SCRIPT (IMPORTANT: placed at bottom) -->
+<script>
+const fileInput = document.getElementById("fileInput");
+const fileName = document.getElementById("fileName");
+const preview = document.getElementById("preview");
+const form = document.getElementById("uploadForm");
+const loading = document.getElementById("loading");
+
+// NEW: get result section
+const resultSection = document.getElementById("resultSection");
+
+// Show filename + preview
+fileInput.addEventListener("change", function () {
+    if (this.files.length > 0) {
+        const file = this.files[0];
+        fileName.textContent = "Selected: " + file.name;
+
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+
+        // 🔥 CLEAR OLD RESULT
+        if (resultSection) {
+            resultSection.style.display = "none";
+        }
+
+    } else {
+        fileName.textContent = "No file selected";
+        preview.style.display = "none";
+    }
+});
+
+// Show loading
+form.addEventListener("submit", function () {
+    loading.style.display = "block";
+});
+</script>
+
+</body>
+</html>
